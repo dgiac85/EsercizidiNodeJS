@@ -7,21 +7,25 @@ fs.open(
     function (err, handle) {
         if (err) {
             console.log("ERROR: " + err.code + " (" + err.message + ")");
-            return;
+            return; //uscita dal programma nel caso ci fossero errori
         }
-        var buf = new Buffer(100000);
-        fs.read(
-            handle, buf, 0, 100000, null,
-            function (err, length) {
-                if (err) {
-                    console.log("ERROR: " + err.code
-                                + " (" + err.message + ")");
-                    return;
+        else{
+            console.log("ENTRA NELL'ELSE");
+            //è possibile inserire un else anche 
+            var buf = new Buffer(100000);
+            fs.read(
+                handle, buf, 0, 100000, null,
+                function (err, length) {
+                    if (err) {
+                        console.log("ERROR: " + err.code
+                                    + " (" + err.message + ")");
+                        return;//uscita dal programma nel caso ci fossero errori
+                    }
+                    console.log(buf.toString('utf8', 0, length));
+                    fs.close(handle, function () { /* don't care */ });
                 }
-                console.log(buf.toString('utf8', 0, length));
-                fs.close(handle, function () { /* don't care */ });
-            }
-        );
+            );
+        }
     }
 );
 
