@@ -10,7 +10,7 @@ function load_album_list(callback) {
         "albums",
         function (err, files) {
             if (err) {
-                callback(make_error("file_error",  JSON.stringify(err)));
+                callback(make_error("file_error",  JSON.stringify(err)));  //genero l'errore con la funzione make_error
                 return;
             }
 
@@ -19,7 +19,7 @@ function load_album_list(callback) {
             (function iterator(index) {
                 if (index == files.length) {
                     callback(null, only_dirs);
-                    return;
+                    return; //esce dalla funzione?
                 }
 
                 fs.stat(
@@ -45,9 +45,7 @@ function load_album_list(callback) {
 function load_album(album_name, callback) {
     // we will just assume that any directory in our 'albums'
     // subfolder is an album.
-    fs.readdir(
-        "albums/" + album_name,
-        function (err, files) {
+    fs.readdir("albums/" + album_name,function (err, files) {
             if (err) {
                 if (err.code == "ENOENT") {
                     callback(no_such_album());
@@ -69,9 +67,7 @@ function load_album(album_name, callback) {
                     return;
                 }
 
-                fs.stat(
-                    path + files[index],
-                    function (err, stats) {
+                fs.stat(path + files[index],function (err, stats) {
                         if (err) {
                             callback(make_error("file_error",
                                                 JSON.stringify(err)));
@@ -84,10 +80,10 @@ function load_album(album_name, callback) {
                         }
                         iterator(index + 1)
                     }                    
-                );
+                ); //chiusura lista parametri stat()
             })(0);
         }
-    );
+    ); //chiusura lista parametri readdir()
 }
 
 // prima funzione chiamata
@@ -117,10 +113,11 @@ function handle_list_albums(req, res) {
 //Terza funzione chiamata
 function handle_get_album(req, res) {
     // format of request is /albums/album_name.json
-    var album_name = req.url.substr(7, req.url.length - 12);
-    load_album(
-        album_name,
-        function (err, album_contents) {
+	console.log("URL richiesto: "+req.url);
+	console.log("lunghezza URL: "+req.url.length);
+	console.log("stringa ottenuta:"+req.url.substr(7, req.url.length - 12));
+    var album_name = req.url.substr(7, req.url.length - 12); //serve per beccare il nome della cartella
+    load_album(album_name,function (err, album_contents) {
             if (err && err.error == "no_such_album") {
                 send_failure(res, 404, err);
             }  else if (err) {
@@ -138,6 +135,7 @@ function make_error(err, msg) {
     e.code = err;
     return e;
 }
+
 // quarta funzione chiamata
 function send_success(res, data) {
     res.writeHead(200, {"Content-Type": "application/json"});
@@ -165,4 +163,25 @@ function no_such_album() {
 
 var s = http.createServer(handle_incoming_request);
 s.listen(8080);
+
+/*handle incoming request è la prima funzione ad esser chiamata
+quindi in base all'url che ho richiesto viene gestito un controllo if/elseif/else
+
+nell'if si soddisfa la richiesta di ottenere le cartelle contenute nell'album di foto 
+______handle_list_albums(req, res);
+			In questa funzione viene chiamata la funzione load_album_list(function (err, albums){...});
+			______load_album_list(function (err, albums){...})
+						questa funzione è una funzione asincrona che nel caso di callback errata invia un send_failure
+						altrimenti invia un send_success. La callback si produce andando a fare una fs.readdir ed una fs.stat
+						la fs.stat la si fa all'interno di una funzione ricorsiva iterator per risolvere la problematica relativa alla coda
+						di eventi di Node.js e quindi alla sua natura non bloccante (thread singolo)
+________________________________________________________________________________________
+nell'elseif si soddisfa la richiesta di ottenere i file contenuti in una certa cartella
+______ handle_get_album(req, res);
+			In questa funzione viene chiamata load_album
+			______load_album(album_name, callback){......});
+						questa funzione si becca il nome dell'album preciso dell'album e fa più o meno le stesse cose della precedente				
+________________________________________________________________________________________
+*/
+
 

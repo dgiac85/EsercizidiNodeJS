@@ -5,25 +5,26 @@ var http = require('http'),
 function load_album_list(callback) {
     // we will just assume that any directory in our 'albums'
     // subfolder is an album.
-    fs.readdir(
-        "albums",
-        function (err, files) {
+    fs.readdir("albums",function (err, files) {
             if (err) {
                 callback(err);
                 return;
             }
 
             var only_dirs = [];
+			
+			//iterator(0); //la metto commentata perchè la richiamo per la prima volta con il metodo
+																										// (function iterator(index){.....})(0)	
 
+			//è una ricorsiva - mettendo la funzione tra parentesi e con il parametro a 0 si chiama per la prima volta
             (function iterator(index) {
+				console.log("index:"+index+"\n");
                 if (index == files.length) {
                     callback(null, only_dirs);
                     return;
                 }
 
-                fs.stat(
-                    "albums/" + files[index],
-                    function (err, stats) {
+                fs.stat("albums/" + files[index],function (err, stats) {
                         if (err) {
                             callback(err);
                             return;

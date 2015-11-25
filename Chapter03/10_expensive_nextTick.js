@@ -2,7 +2,7 @@
 function compute_intersection(arr1, arr2, callback) {
 
     var bigger = arr1.length > arr2.length ? arr1 : arr2;
-    var smaller = bigger == arr1 ? arr2 : arr1;
+    var smaller = bigger == arr1 ? arr2 : arr1; // Se bigger == arr1 allora arr2 è lo smaller altrimenti è arr1
     var biglen = bigger.length;
     var smlen = smaller.length;
 
@@ -24,7 +24,7 @@ function compute_intersection(arr1, arr2, callback) {
             callback(null, results);
         } else {
             sidx += size;
-            process.nextTick(sub_compute_intersection);
+            process.nextTick(sub_compute_intersection); //do la palla ad altre richieste salvando l'ambito corrente
         }
     }
 
