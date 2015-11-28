@@ -43,6 +43,12 @@ function load_album_list(callback) {
     );
 }
 
+//con questa modifica è possibile gestire una richiesta con curl del tipo
+//curl -X GET http://localhost:8080/albums/italy2012.json?page=1&page_size=20
+//IN QUESTA RICHIESTA NOTIAMO LA PRESENZA DI PARAMETRI
+
+//ATTENZIONE!!!!!!! IN QUESTO SCRIPT LE PAGINE PARTONO DA 0!!!!
+
 function load_album(album_name, page, page_size, callback) {
     fs.readdir(
         "albums/" + album_name,
@@ -61,14 +67,20 @@ function load_album(album_name, page, page_size, callback) {
             var path = "albums/" + album_name + "/";
 
             (function iterator(index) {
-                if (index == files.length) {
+                if (index == files.length) { //viene richiamata solo alla fine ed esce dalla funzione
                     var ps;
                     // slice fails gracefully if params are out of range
+                    //splice non funzionerà se i dati risultano fuori dall'intervallo
+
                     ps = only_files.splice(page * page_size, page_size);
+
+                    console.log("PS="+ps[0].filename); //ps è l'arrey di oggetti contenente i nomi dei files
                     var obj = { short_name: album_name,
                                 photos: ps };
                     callback(null, obj);
-                    return;
+
+                    console.log(index);
+                    return; 
                 }
 
                 fs.stat(
@@ -98,6 +110,8 @@ function handle_incoming_request(req, res) {
     // without them. (2nd param true = parse the params).
     req.parsed_url = url.parse(req.url, true);
     var core_url = req.parsed_url.pathname;
+
+    console.log("req.parsed_url="+req.parsed_url+'\n'+"core_url="+req.parsed_url.pathname+'\n');
 
     // test this fixed url to see what they're asking for
     if (core_url == '/albums.json') {
