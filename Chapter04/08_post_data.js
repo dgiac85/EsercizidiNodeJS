@@ -106,6 +106,20 @@ function do_rename(old_name, new_name, callback) {
 
 
 
+/*E' possibile notare come la presenza di un altro metodo come post,
+porti alla gestione dei tipi di richiesta in handle_incoming_request
+Cioè con delle if si verifica se la richiesta è una get che desidera solo la lista delle cartelle
+oppure se si desidera la lista dei file di una specifica cartella, sempre mediante una get, oppure
+se si vuole effettuare una POST e rinominare un album mediante la richiesta rename.json
+*/
+
+/* MOLTO IMPORTANTE!!!!
+BISOGNA METTERE IL CONTROLLO A RENAME.JSON COME PRIMA ELSEIF
+SE LA SI METTE DOPO L'ELSEIF IN CUI SI CHIEDE IL NOME DELL'ALBUM
+IL SERVER PENSERA' CHE RENAME E' IL NOME DI UNA DELLE CARTELLE PRESENTI 
+NELL'ALBUM GENERALE OLTRE A ITALY2012 USA...ECC...
+ESEGUIREBBE QUINDI LA FUNZIONE HANDLE_GET_ALBUM();
+*/
 
 function handle_incoming_request(req, res) {
 
@@ -170,12 +184,15 @@ function handle_get_album(req, res) {
     );
 }
 
+//FUNZIONE LATO SERVER CHE MI PERMETTE DI RINOMINARE UN FILE
 
 function handle_rename_album(req, res) {
 
     // 1. Get the album name from the URL
     var core_url = req.parsed_url.pathname;
     var parts = core_url.split('/');
+    console.log("partsLength:"+parts.length);
+    console.log("core_url:"+core_url);
     if (parts.length != 4) {
         send_failure(res, 404, invalid_resource());
         return;
@@ -233,7 +250,7 @@ function handle_rename_album(req, res) {
                             send_failure(res, 500, file_error(err));
                             return;
                         }
-                        send_success(res, null);
+                        send_success(res, "file rinominato con successo!");
                     }
                 );
             } else {
