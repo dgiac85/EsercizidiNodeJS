@@ -1,6 +1,7 @@
 var path = require('path'),
     fs = require('fs');
 
+//CLASSE BASE ALBUM 
 function Album (album_path) {
     this.name = path.basename(album_path);
     this.path = album_path;

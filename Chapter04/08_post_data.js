@@ -186,6 +186,12 @@ function handle_get_album(req, res) {
 
 //FUNZIONE LATO SERVER CHE MI PERMETTE DI RINOMINARE UN FILE
 
+/*
+Mediante il form invio i dati
+il browser mostrerà il risultato della action ovvero {error:null}
+il server avrà ricevuto i dati che potrà perciò rielaborare a suo piacimento
+*/
+
 function handle_rename_album(req, res) {
 
     // 1. Get the album name from the URL
