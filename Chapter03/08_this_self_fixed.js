@@ -33,7 +33,8 @@ function FileObject () {
             FileObject...perchè la funzione è praticamente terminata.
             La cattiva notizia è che si è perso il puntatore this che fa riferimento
             alla classe FileObject. Quella buona è che il callback per fs.open
-            ha ancora l'ambito corretto.
+            ha ancora l'ambito corretto. Ambito corretto significa che fs.open vede la variabile self
+            perchè è stata dichiarata in un contesto padre. This invece è stato perso!
             Una soluzione comune è salvare il puntatore this iu una variabile chiamata self
             
         */
