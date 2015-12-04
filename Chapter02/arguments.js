@@ -71,6 +71,7 @@ console.log(sq instanceof Square);
 console.log(sq instanceof Shape);
 console.log(sq instanceof Rectangle);
 console.log(re instanceof Rectangle);
+console.log("RE is a shape " + (re instanceof Shape));
 console.log(sq instanceof Square);
 console.log(sq instanceof Shape);
 console.log(sq instanceof Date);

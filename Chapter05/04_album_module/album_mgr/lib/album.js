@@ -7,6 +7,9 @@ function Album (album_path) {
     this.path = album_path;
 }
 
+
+//con prototype le istanze album useranno tutte la stessa implementazione
+//prototype è solo un modo per impostare le proprietà su tutte le istanzae della classe Album
 Album.prototype.name = null;
 Album.prototype.path = null;
 Album.prototype._photos = null;
@@ -16,7 +19,9 @@ Album.prototype.photos = function (callback) {
         callback(null, this._photos);
         return;
     }
-
+    //il self è utile a memorizzare il riferimetno all'oggetto durante la
+    //gestione dell'IO asincrono non bloccante
+    //self mi aiuta a memorizzare il riferimento all'oggetto
     var self = this;
 
     fs.readdir(
