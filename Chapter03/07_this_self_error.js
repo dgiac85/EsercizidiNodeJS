@@ -20,6 +20,11 @@ function FileObject () {
             FS.OPEN PROCEDE QUINDI PER FATTI SUOI E TRAMITE LA CALLBACK ESPORRA' I SUOI RISULTATI 
             CHE ALLA FINE ANDRANNO A TERMINARE IN RESULTS.
         */
+
+        /*
+        fs.open becca this.filename alla chiamata,
+        ma non riuscirà a beccarlo dopo perchè this.filename sarà diventato undefined
+        */
         fs.open(this.filename, 'r', function (err, handle) {
             console.log("SONO ENTRATO IN FSOPEN");
             if (err) {
@@ -33,10 +38,10 @@ function FileObject () {
             fs.close(handle, function () { });
             callback(null, true);
         });
-        setTimeout(function () {
+        /*setTimeout(function () {
             console.log("I've done my work!");
              console.log("io sto procedendo, fsopen sta lavorando per fatti suoi");
-        }, 2000);
+        }, 2000);*/
         
     };
 }
@@ -45,7 +50,8 @@ var fo = new FileObject(); //creo una variabile di "classe" FileObject
 //quindi ho a disposizione membri e metodi di questa classe
 //e cioè posso accedere al membro filename e al metodo file_exists che passa come parametro una funzione anonima
 
-fo.filename = "file_that_does_not_exist";
+
+fo.filename = "info.txt";
 
 fo.file_exists(function (err, results) {
     if (err) {
